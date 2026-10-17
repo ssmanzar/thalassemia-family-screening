@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Thalassemia Screening & Family Register</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+  <style>
+    :root {
+      --bg: #eef3f4;
+      --sf: #fff;
+      --ink: #14262e;
+      --mu: #5a6e76;
+      --ln: #d3dde0;
+      --tl: #0f6b6b;
+      --rd: #b3263e;
+      --am: #a56d00;
+      --gn: #2f7d4f;
+      color-scheme: light;
+      box-sizing: border-box;
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px)
+    }
+
+    @media(prefers-color-scheme:dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0e1a1e;
+        --sf: #16272d;
+        --ink: #e6eff1;
+        --mu: #9bb0b7;
+        --ln: #2a4048;
+        --tl: #4cc0c0;
+        --rd: #ff7a8f;
+        --am: #e8b04a;
+        --gn: #6fd197;
+        color-scheme: dark
+      }
+    }
+
+    html {
+      scroll-padding-top: env(safe-area-inset-top, 0px)
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.5 'Atkinson Hyperlegible', system-ui, sans-serif
+    }
+
+    header {
+      background: var(--tl);
+      color: #fff;
+      padding: 14px 20px
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.25rem
+    }
+
+    header p {
+      margin: 0;
+      opacity: .85;
+      font-size: .9rem
+    }
+
+    nav {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      background: var(--sf);
+      border-bottom: 1px solid var(--ln);
+      padding: 0 12px
+    }
+
+    nav button {
+      border: 0;
+      background: none;
+      color: var(--mu);
+      padding: 12px 14px;
+      font: inherit;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap
+    }
+
+    nav button.on {
+      color: var(--tl);
+      border-color: var(--tl);
+      font-weight: 700
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 16px 60px
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.3rem
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px
+    }
+
+    .card {
+      background: var(--sf);
+      border: 1px solid var(--ln);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: left;
+      font: inherit;
+      color: inherit
+    }
+
+    button.card {
+      cursor: pointer
+    }
+
+    button.card:hover {
+      border-color: var(--tl)
+    }
+
+    .card b {
+      display: block;
+      font-size: 2rem;
+      line-height: 1.1
+    }
+
+    .card span {
+      color: var(--mu);
+      font-size: .9rem
+    }
+
+    .k-Major b {
+      color: var(--rd)
+    }
+
+    .k-Carrier b,
+    .k-Minor b {
+      color: var(--am)
+    }
+
+    .k-Normal b {
+      color: var(--gn)
+    }
+
+    .box {
+      background: var(--sf);
+      border: 1px solid var(--ln);
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 16px;
+      overflow-x: auto
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+      align-items: end
+    }
+
+    label {
+      display: grid;
+      gap: 3px;
+      font-size: .85rem;
+      color: var(--mu)
+    }
+
+    input,
+    select {
+      font: inherit;
+      padding: 8px;
+      border: 1px solid var(--ln);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--ink);
+      min-width: 0
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--tl);
+      outline-offset: 1px
+    }
+
+    .btn {
+      background: var(--tl);
+      color: #fff;
+      border: 0;
+      border-radius: 6px;
+      padding: 9px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer
+    }
+
+    .btn.ghost {
+      background: none;
+      color: var(--tl);
+      border: 1px solid var(--tl)
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: .92rem
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 8px;
+      border-bottom: 1px solid var(--ln);
+      white-space: nowrap
+    }
+
+    th {
+      color: var(--mu);
+      font-weight: 700
+    }
+
+    .chip {
+      display: inline-block;
+      padding: 1px 9px;
+      border-radius: 99px;
+      border: 1px solid currentColor;
+      font-size: .8rem
+    }
+
+    .c-Major {
+      color: var(--rd)
+    }
+
+    .c-Minor,
+    .c-Carrier,
+    .c-Intermedia {
+      color: var(--am)
+    }
+
+    .c-Normal {
+      color: var(--gn)
+    }
+
+    .c-Unknown,
+    .c-Pending {
+      color: var(--mu)
+    }
+
+    .tree {
+      display: grid;
+      gap: 22px;
+      justify-items: center
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative
+    }
+
+    .node {
+      border: 2px solid var(--ln);
+      border-radius: 8px;
+      background: var(--bg);
+      padding: 8px 12px;
+      min-width: 140px;
+      text-align: center
+    }
+
+    .node.Major {
+      border-color: var(--rd)
+    }
+
+    .node.Carrier,
+    .node.Minor,
+    .node.Intermedia {
+      border-color: var(--am)
+    }
+
+    .node.Normal {
+      border-color: var(--gn)
+    }
+
+    .node small {
+      display: block;
+      color: var(--mu)
+    }
+
+    .bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      align-items: end
+    }
+
+    .note {
+      color: var(--mu);
+      font-size: .85rem
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 999;
+      overflow-y: auto;
+      padding: 16px;
+      align-items: center;
+      justify-content: center
+    }
+
+    .modal-backdrop.show {
+      display: flex
+    }
+
+    .modal-card {
+      background: var(--sf);
+      border-radius: 10px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+      max-width: 640px;
+      width: 100%;
+      overflow: hidden;
+      border: 1px solid var(--ln)
+    }
+
+    .slip-box {
+      padding: 22px;
+      background: #fff;
+      color: #14262e;
+      font-size: 14px;
+      border: 1px solid #d3dde0;
+      border-radius: 8px;
+      margin: 16px
+    }
+
+    .slip-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 16px;
+      margin: 12px 0
+    }
+
+    .slip-row {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dotted #ccc;
+      padding: 4px 0
+    }
+
+    .slip-row b {
+      color: #334155;
+      font-size: 0.88rem
+    }
+
+    .slip-row span {
+      font-size: 0.92rem;
+      font-weight: 500;
+      text-align: right
+    }
+
+    @media print {
+
+      header,
+      nav,
+      .bar,
+      form,
+      .btn,
+      #nav,
+      .slip-no-print {
+        display: none !important
+      }
+
+      body {
+        background: #fff !important;
+        color: #000 !important
+      }
+
+      body.printing-slip #app {
+        display: none !important
+      }
+
+      body.printing-slip .modal-backdrop {
+        position: static !important;
+        background: none !important;
+        display: block !important;
+        padding: 0 !important
+      }
+
+      body.printing-slip .modal-card {
+        box-shadow: none !important;
+        border: none !important;
+        max-width: 100% !important;
+        width: 100% !important
+      }
+
+      body.printing-slip .slip-box {
+        border: 2px solid #000 !important;
+        padding: 16px !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        color: #000 !important
+      }
+
+      body.printing-slip .slip-row b {
+        color: #000 !important
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>KITCC- Thalassemia Screening & Family Register</h1>
+    <p>Patients, family tree, family screening and reports</p>
+  </header>
+  <nav id="nav"></nav>
+  <main id="app"></main>
+  <div id="slipModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div class="slip-no-print"
+        style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--ln);background:var(--sf)">
+        <b style="font-size:1.05rem">Patient Registration Card Preview</b>
+        <div style="display:flex;gap:8px">
+          <button class="btn" onclick="triggerPrintSlip()">Print slip</button>
+          <button class="btn ghost" onclick="closeSlip()">Close</button>
+        </div>
+      </div>
+      <div id="slipContent"></div>
+    </div>
+  </div>
+  <div id="editModal" class="modal-backdrop">
+    <div class="modal-card" style="max-width:680px">
+      <div
+        style="display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--ln);background:var(--sf)">
+        <b style="font-size:1.05rem" id="editModalTitle">Edit Patient Details</b>
+        <button class="btn ghost" style="padding:2px 8px;font-size:1.1rem;line-height:1"
+          onclick="closeEditModal()">✕</button>
+      </div>
+      <div id="editModalBody" style="padding:18px"></div>
+    </div>
+  </div>
+  <script>
+    const K = 'thal_v1', CATS = ['Major', 'Minor', 'Carrier', 'Intermedia', 'Normal', 'Unknown'], RES = ['Major', 'Minor', 'Carrier', 'Intermedia', 'Normal', 'Inconclusive'],
+      STAT = ['Pending', 'Sample Collected', 'In Process', 'Completed', 'Referred', 'Cancelled'],
+      RELS = ['Self', 'Father', 'Mother', 'Brother', 'Sister', 'Aap ke behan-bhai', 'Son', 'Daughter', 'Grandfather', 'Grandmother', 'Nana', 'Nani', 'Mamoo', 'Mami', 'Mamoo ke bachay', 'Khala', 'Khalu', 'Khala ke bachay', 'Ammi ke bhai-behen', 'Uncle', 'Aunt', 'Cousin', 'Other'],
+      TESTS = ['CBC', 'HPLC', 'Hb Electrophoresis', 'Other'];
+    let db = null, view = 'dash', flt = '', fam = '';
+    try { db = JSON.parse(localStorage.getItem(K)) } catch (e) { }
+    if (!db) db = {
+      n: 6, patients: [
+        { id: 'P-0001', mrNo: 'MR-1001', name: 'Ali Raza', father: 'Imran Raza', mother: 'Sana Bibi', gender: 'Male', age: 9, contact: '0300-1111111', district: 'Karachi', qaum: 'Baloch', cat: 'Major', famId: 'F-001', rel: 'Self' },
+        { id: 'P-0002', mrNo: 'MR-1002', name: 'Imran Raza', father: '', mother: '', gender: 'Male', age: 38, contact: '', district: 'Karachi', qaum: 'Baloch', cat: 'Carrier', famId: 'F-001', rel: 'Father' },
+        { id: 'P-0003', mrNo: 'MR-1003', name: 'Sana Bibi', father: '', mother: '', gender: 'Female', age: 34, contact: '', district: 'Karachi', qaum: 'Baloch', cat: 'Carrier', famId: 'F-001', rel: 'Mother' },
+        { id: 'P-0004', mrNo: 'MR-1004', name: 'Hina Raza', father: 'Imran Raza', mother: 'Sana Bibi', gender: 'Female', age: 6, contact: '', district: 'Karachi', qaum: 'Baloch', cat: 'Unknown', famId: 'F-001', rel: 'Sister' },
+        { id: 'P-0005', mrNo: 'MR-1005', name: 'Bilal Khan', father: 'Nadeem Khan', mother: 'Rukhsana', gender: 'Male', age: 12, contact: '0321-2222222', district: 'Hyderabad', qaum: 'Pathan', cat: 'Normal', famId: 'F-002', rel: 'Self' }],
+      families: [{ id: 'F-001', head: 'P-0001', qaum: 'Baloch', district: 'Karachi', date: '2026-10-01' }, { id: 'F-002', head: 'P-0005', qaum: 'Pathan', district: 'Hyderabad', date: '2026-10-05' }],
+      screens: [{ id: 'S-0001', pid: 'P-0004', test: 'HPLC', sample: 'LAB-1001', date: '2026-10-12', status: 'Sample Collected', result: '' }]
+    };
+    const save = () => { try { localStorage.setItem(K, JSON.stringify(db)) } catch (e) { } };
+    const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const P = id => db.patients.find(p => p.id === id) || {};
+    const chip = c => `<span class="chip c-${c || 'Unknown'}">${esc(c || 'Unknown')}</span>`;
+    const pad = (p, n) => p + String(n).padStart(4, '0');
+    const open = s => ['Pending', 'Sample Collected', 'In Process'].includes(s.status);
+    const opts = (a, sel) => a.map(x => `<option${x === sel ? ' selected' : ''}>${x}</option>`).join('');
+    const tbl = (c, r) => `<table><thead><tr>${c.map(x => `<th>${x}</th>`).join('')}</tr></thead><tbody>${r.length ? r.map(x => `<tr>${x.map(y => `<td>${y}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${c.length}" class="note">No records yet.</td></tr>`}</tbody></table>`;
+    const go = (v, f) => { view = v; if (f !== undefined) flt = f; render() };
+    function nav() { document.getElementById('nav').innerHTML = [['dash', 'Dashboard'], ['pat', 'Patients'], ['fam', 'Family tree'], ['scr', 'Screening'], ['rep', 'Reports & export']].map(([k, t]) => `<button class="${view === k ? 'on' : ''}" onclick="go('${k}')">${t}</button>`).join('') }
+    function render() { nav(); const a = document.getElementById('app'); a.innerHTML = ({ dash, pat, fam: famV, scr, rep })[view](); }
+
+    function dash() {
+      const p = db.patients, n = c => p.filter(x => x.cat === c).length;
+      const lab = { Major: 'Thalassemia Major', Minor: 'Thalassemia Minor', Carrier: 'Carriers', Intermedia: 'Intermedia', Normal: 'Normal (screened)', Unknown: 'Not yet screened' };
+      let h = '<h2>Dashboard</h2><div class="grid"><button class="card" onclick="go(\'pat\',\'\')"><b>' + p.length + '</b><span>Registered patients</span></button>' +
+        CATS.map(c => `<button class="card k-${c}" onclick="go('pat','${c}')"><b>${n(c)}</b><span>${lab[c]}</span></button>`).join('') + '</div>';
+      const sc = db.screens; h += '<div class="grid">' + [['Registered families', db.families.length], ['Family members', p.filter(x => x.rel !== 'Self').length], ['Screening pending', sc.filter(open).length], ['Tests completed', sc.filter(s => s.status === 'Completed').length], ['Referred', sc.filter(s => s.status === 'Referred').length]].map(([t, v]) => `<div class="card"><b>${v}</b><span>${t}</span></div>`).join('') + '</div>';
+      h += '<div class="box"><h2>Caste / Tribe (Qaum) summary</h2>' + qaumTbl() + '<p class="note">Qaum is used for reporting only. It never changes anyone\'s diagnosis.</p></div>'; return h
+    }
+    function qaumTbl() {
+      const q = [...new Set(db.patients.map(p => p.qaum || 'Not recorded'))];
+      return tbl(['Qaum', 'Families', 'Patients', 'Major', 'Minor', 'Carrier', 'Intermedia', 'Normal', 'Pending'], q.map(k => {
+        const ps = db.patients.filter(p => (p.qaum || 'Not recorded') === k), c = x => ps.filter(p => p.cat === x).length;
+        return [esc(k), new Set(ps.map(p => p.famId)).size, ps.length, c('Major'), c('Minor'), c('Carrier'), c('Intermedia'), c('Normal'), db.screens.filter(s => open(s) && ps.some(p => p.id === s.pid)).length]
+      }))
+    }
+
+    function pat() {
+      const q = (window._q || '').toLowerCase();
+      const list = db.patients.filter(p => (!flt || p.cat === flt) && (!q || [p.id, p.mrNo || '', p.name, p.father, p.contact].join(' ').toLowerCase().includes(q)));
+      return `<h2>Patient registration</h2><div class="box"><form onsubmit="addPat(event)">
+<label>MR No.<input name="mrNo" placeholder="e.g. MR-0001"></label>
+<label>Patient name<input name="name" required></label><label>Father name<input name="father"></label><label>Mother name<input name="mother"></label>
+<label>Age<input name="age" type="number" min="0" max="120"></label><label>Gender<select name="gender">${opts(['Male', 'Female', 'Other'])}</select></label>
+<label>Mobile<input name="contact" inputmode="tel"></label><label>City / district<input name="district"></label><label>Caste / Tribe (Qaum)<input name="qaum"></label>
+<label>Patient category<select name="cat">${opts(CATS, 'Unknown')}</select></label>
+<label>Family<select name="famId"><option value="">New family</option>${db.families.map(f => `<option value="${f.id}">${f.id} – ${esc(P(f.head).name)}</option>`).join('')}</select></label>
+<label>Relation to family head<select name="rel">${opts(RELS)}</select></label>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+  <button type="submit" class="btn" onclick="window._doPrint=false">Save patient</button>
+  <button type="submit" class="btn ghost" onclick="window._doPrint=true" style="border-color:var(--tl);display:inline-flex;align-items:center;gap:6px">
+    <span>🖨️</span> Save &amp; Print
+  </button>
+</div></form>
+<p class="note">Choosing "New family" makes this person the family head. Category is the verified diagnosis; lab results are tracked separately under Screening.</p></div>
+<div class="bar"><label>Search by ID, MR No, name, father or mobile<input value="${esc(window._q || '')}" oninput="window._q=this.value;render2()"></label>
+<label>Category<select onchange="flt=this.value;render()"><option value="">All</option>${opts(CATS, flt)}</select></label>
+<div style="margin-left:auto;display:flex;gap:8px">
+  <button type="button" class="btn" onclick="exportPatientsCsv()" style="display:inline-flex;align-items:center;gap:6px" title="Export all patients data to Excel">
+    <span>📊</span> Export Excel (All data)
+  </button>
+</div></div>
+<div class="box" id="plist">${plist(list)}</div>`
+    }
+    const render2 = () => { const q = (window._q || '').toLowerCase(); const l = db.patients.filter(p => (!flt || p.cat === flt) && (!q || [p.id, p.mrNo || '', p.name, p.father, p.contact].join(' ').toLowerCase().includes(q))); document.getElementById('plist').innerHTML = plist(l) };
+    const plist = l => tbl(['ID', 'MR No', 'Name', 'Father', 'Age', 'District', 'Qaum', 'Family', 'Relation', 'Category', 'Actions'], l.map(p => [p.id, esc(p.mrNo || '—'), esc(p.name), esc(p.father), esc(p.age), esc(p.district), esc(p.qaum), p.famId, p.rel, chip(p.cat), `<div style="display:flex;gap:4px"><button class="btn ghost" style="padding:4px 8px" onclick="editPat('${p.id}')" title="Edit patient">Edit</button><button class="btn ghost" style="padding:4px 8px" onclick="printSlip('${p.id}')" title="Print registration slip">Print</button><button class="btn ghost" style="padding:4px 8px" onclick="go('fam');fam='${p.famId}';render()" title="Family tree">Tree</button><button class="btn ghost" style="padding:4px 8px;color:var(--rd);border-color:var(--rd)" onclick="delPat('${p.id}')" title="Delete patient">Delete</button></div>`]));
+    function exportPatientsCsv() {
+      const cols = [
+        'ID', 'MR No', 'Registration Date', 'Patient Name', 'Father Name', 'Mother Name',
+        'Gender', 'Age', 'Mobile / Contact', 'City / District', 'Caste / Tribe (Qaum)',
+        'Family ID', 'Family Head', 'Relation to Head', 'Diagnosis Category',
+        'Latest Test', 'Sample No', 'Screening Date', 'Screening Status', 'Screening Result'
+      ];
+      const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+      const rows = db.patients.map(p => {
+        const famObj = db.families.find(f => f.id === p.famId);
+        const headP = famObj ? P(famObj.head) : {};
+        const screens = db.screens.filter(s => s.pid === p.id);
+        const ls = screens[screens.length - 1] || {};
+        const regDate = p.date || famObj?.date || '';
+        return [
+          p.id,
+          p.mrNo || '',
+          regDate,
+          p.name,
+          p.father || '',
+          p.mother || '',
+          p.gender || '',
+          p.age ?? '',
+          p.contact || '',
+          p.district || '',
+          p.qaum || '',
+          p.famId || '',
+          headP?.name || (p.rel === 'Self' ? p.name : ''),
+          p.rel || 'Self',
+          p.cat || 'Unknown',
+          ls.test || '',
+          ls.sample || '',
+          ls.date || '',
+          ls.status || '',
+          ls.result || ''
+        ];
+      });
+      const s = '\ufeff' + [cols, ...rows].map(r => r.map(q).join(',')).join('\r\n');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([s], { type: 'text/csv;charset=utf-8;' }));
+      a.download = `thalassemia-patients-all-data-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+    function addPat(e) {
+      e.preventDefault(); const f = Object.fromEntries(new FormData(e.target));
+      const dup = db.patients.find(p => p.name.toLowerCase() === f.name.trim().toLowerCase() && p.father.toLowerCase() === f.father.trim().toLowerCase());
+      if (dup && !confirm('A patient with this name and father name already exists (' + dup.id + '). Save anyway?')) return;
+      const id = pad('P-', db.n++); let fid = f.famId, rel = f.rel;
+      const today = new Date().toISOString().slice(0, 10);
+      if (!fid) { fid = 'F-' + String(db.families.length + 1).padStart(3, '0'); db.families.push({ id: fid, head: id, qaum: f.qaum, district: f.district, date: today }); rel = 'Self' }
+      db.patients.push({ id, mrNo: (f.mrNo || '').trim(), name: f.name.trim(), father: f.father, mother: f.mother, gender: f.gender, age: f.age, contact: f.contact, district: f.district, qaum: f.qaum, cat: f.cat, famId: fid, rel, date: today }); save(); flt = ''; fam = fid; render();
+      if (window._doPrint) { window._doPrint = false; printSlip(id, true) }
+    }
+    function delPat(id) {
+      const p = P(id);
+      if (!p || !p.id) return;
+      if (!confirm(`Are you sure you want to delete patient "${p.name}" (${p.id})? This will also remove any screening tests recorded for this patient.`)) return;
+      const famObj = db.families.find(f => f.id === p.famId);
+      if (famObj && famObj.head === id) {
+        const nextMember = db.patients.find(x => x.famId === famObj.id && x.id !== id);
+        if (nextMember) {
+          famObj.head = nextMember.id;
+          nextMember.rel = 'Self';
+        } else {
+          db.families = db.families.filter(f => f.id !== famObj.id);
+          if (fam === famObj.id) fam = db.families[0]?.id || '';
+        }
+      }
+      db.patients = db.patients.filter(x => x.id !== id);
+      db.screens = db.screens.filter(s => s.pid !== id);
+      save();
+      render();
+    }
+
+    function famV() {
+      if (!fam || !db.families.find(f => f.id === fam)) fam = db.families[0]?.id || '';
+      if (!fam) return '<h2>Family tree</h2><div class="box">Register a patient to create the first family.</div>';
+      const f = db.families.find(x => x.id === fam), m = db.patients.filter(p => p.famId === fam);
+      const row = rs => { const x = m.filter(p => rs.includes(p.rel)); return x.length ? `<div class="row">${x.map(node).join('')}</div>` : '' };
+      const node = p => { const s = db.screens.filter(s => s.pid === p.id).slice(-1)[0]; return `<div class="node ${p.cat}"><b>${esc(p.name)}</b>${p.mrNo ? `<small style="font-weight:700;color:var(--tl)">MR: ${esc(p.mrNo)}</small>` : ''}<small>${p.rel} · ${esc(p.age || '?')} yrs</small>${chip(p.cat)}<small>${s ? s.test + ': ' + s.status : 'Not screened'}</small><div style="display:flex;gap:4px;justify-content:center;margin-top:6px"><button class="btn ghost" style="padding:3px 8px" onclick="scrPid='${p.id}';go('scr')">Screen</button><button class="btn ghost" style="padding:3px 8px" onclick="editPat('${p.id}')">Edit</button><button class="btn ghost" style="padding:3px 8px" onclick="printSlip('${p.id}')">Print</button></div></div>` };
+      const miss = ['Father', 'Mother'].filter(r => !m.some(p => p.rel === r));
+      const r1 = row(['Grandfather', 'Grandmother', 'Nana', 'Nani']);
+      const r2 = row(['Father', 'Mother', 'Uncle', 'Aunt', 'Mamoo', 'Mami', 'Khala', 'Khalu', 'Ammi ke bhai-behen']);
+      const r3 = row(['Self', 'Brother', 'Sister', 'Aap ke behan-bhai', 'Cousin', 'Mamoo ke bachay', 'Khala ke bachay']);
+      const r4 = row(['Son', 'Daughter']);
+      const mapped = ['Grandfather', 'Grandmother', 'Nana', 'Nani', 'Father', 'Mother', 'Uncle', 'Aunt', 'Mamoo', 'Mami', 'Khala', 'Khalu', 'Ammi ke bhai-behen', 'Self', 'Brother', 'Sister', 'Aap ke behan-bhai', 'Cousin', 'Mamoo ke bachay', 'Khala ke bachay', 'Son', 'Daughter'];
+      const rOther = row(RELS.filter(r => !mapped.includes(r)));
+      return `<h2>Family tree</h2><div class="bar"><label>Family<select onchange="fam=this.value;render()">${db.families.map(x => `<option value="${x.id}"${x.id === fam ? ' selected' : ''}>${x.id} – ${esc(P(x.head).name)} (${esc(x.qaum || 'Qaum n/a')})</option>`).join('')}</select></label><button class="btn ghost" onclick="window.print()">Print family tree</button></div>
+<div class="box"><div class="tree">${r1}${r2}${r3}${r4}${rOther}</div>
+${miss.length ? `<p class="note">Missing: ${miss.join(', ')}. Parents should be screened first.</p>` : ''}</div>
+<div class="box"><h2>Add family member</h2><form onsubmit="addMem(event)"><label>Name<input name="name" required></label><label>Relation<select name="rel">${opts(RELS.slice(1))}</select></label>
+<label>Age<input name="age" type="number" min="0"></label><label>Gender<select name="gender">${opts(['Male', 'Female', 'Other'])}</select></label><button class="btn">Add member</button></form>
+<p class="note">Already registered? Pick the family on the Patients form to link them instead of re-registering.</p></div>
+<div class="box">${tbl(['ID', 'Name', 'Relation', 'Category', 'Latest screening'], m.map(p => { const s = db.screens.filter(s => s.pid === p.id).slice(-1)[0]; return [p.id, esc(p.name), p.rel, chip(p.cat), s ? s.test + ' – ' + s.status : 'Pending screening'] }))}</div>`
+    }
+    function addMem(e) {
+      e.preventDefault(); const f = Object.fromEntries(new FormData(e.target)), h = P(db.families.find(x => x.id === fam).head);
+      db.patients.push({ id: pad('P-', db.n++), name: f.name.trim(), father: h.father, mother: h.mother, gender: f.gender, age: f.age, contact: '', district: h.district, qaum: h.qaum, cat: 'Unknown', famId: fam, rel: f.rel }); save(); render()
+    }
+
+    let scrPid = '';
+    function scr() {
+      const sFlt = window._scrFlt || 'open';
+      const openCount = db.screens.filter(open).length;
+      const compCount = db.screens.filter(s => s.status === 'Completed').length;
+      const list = sFlt === 'open' ? db.screens.filter(open) : (sFlt === 'completed' ? db.screens.filter(s => s.status === 'Completed') : db.screens);
+
+      return `<h2>Family screening</h2><div class="box"><form onsubmit="addScr(event)">
+<label>Family member<select name="pid">${db.patients.map(p => `<option value="${p.id}"${p.id === scrPid ? ' selected' : ''}>${p.id} – ${esc(p.name)} (${p.famId}, ${p.rel})</option>`).join('')}</select></label>
+<label>Test<select name="test">${opts(TESTS)}</select></label><label>Sample no.<input name="sample" placeholder="LAB-0000" required></label>
+<label>Sample date<input name="date" type="date" value="${new Date().toISOString().slice(0, 10)}"></label>
+<label>Status<select name="status">${opts(STAT, 'Pending')}</select></label>
+<label>Result (verified)<select name="result"><option value="">–</option>${opts(RES)}</select></label>
+<button class="btn">Save screening</button></form></div>
+
+<div class="bar">
+  <label>Filter list<select onchange="window._scrFlt=this.value;render()">
+    <option value="open"${sFlt === 'open' ? ' selected' : ''}>Pending / In Process (${openCount})</option>
+    <option value="completed"${sFlt === 'completed' ? ' selected' : ''}>Completed / Saved (${compCount})</option>
+    <option value="all"${sFlt === 'all' ? ' selected' : ''}>All screenings (${db.screens.length})</option>
+  </select></label>
+</div>
+
+<div class="box">${list.length ? tbl(['ID', 'Member', 'Family', 'Test', 'Sample', 'Date', 'Status', 'Result (verified)', 'Action'], list.map(s => {
+        const p = P(s.pid); return [s.id, esc(p.name), p.famId, s.test, esc(s.sample), s.date,
+        `<select id="st_${s.id}" onchange="onScrChange('${s.id}')">${opts(STAT, s.status)}</select>`,
+        `<select id="res_${s.id}" onchange="onScrChange('${s.id}')"><option value="">–</option>${opts(RES, s.result)}</select>`,
+        `<div style="display:flex;align-items:center;gap:6px"><button class="btn" style="padding:5px 12px;font-size:0.85rem" onclick="saveScrRow('${s.id}')">Save</button><span id="ok_${s.id}" style="color:var(--gn);font-size:0.85rem;font-weight:700;display:none">Saved ✔</span></div>`]
+      })) : `<div class="note" style="padding:14px;text-align:center">${sFlt === 'open' ? 'No pending screenings. All test results are saved &amp; completed!' : 'No screenings found.'}</div>`}
+<p class="note">Result save karne ke baad test "Completed" ho kar yahan active list se khatam ho jata hai. Agar purane dekhne hon to filter se "Completed" select karein.</p></div>`}
+
+    function onScrChange(id) { const st = document.getElementById('st_' + id), res = document.getElementById('res_' + id); if (res && res.value && st && st.value === 'Pending') st.value = 'Completed'; const ok = document.getElementById('ok_' + id); if (ok) ok.style.display = 'none' }
+    function saveScrRow(id) { const s = db.screens.find(x => x.id === id); if (!s) return; const stEl = document.getElementById('st_' + id), resEl = document.getElementById('res_' + id); const stVal = stEl ? stEl.value : s.status, resVal = resEl ? resEl.value : s.result; s.status = (resVal && stVal === 'Pending') ? 'Completed' : stVal; s.result = resVal; if (stEl && s.status !== stVal) stEl.value = s.status; if (resVal && resVal !== 'Inconclusive') { const p = P(s.pid); if (p) p.cat = resVal } save(); const sFlt = window._scrFlt || 'open'; if ((s.status === 'Completed' || resVal) && sFlt === 'open') { render() } else { const ok = document.getElementById('ok_' + id); if (ok) { ok.style.display = 'inline'; setTimeout(() => { if (ok) ok.style.display = 'none' }, 2500) } } }
+    function addScr(e) { e.preventDefault(); const f = Object.fromEntries(new FormData(e.target)); const st = (f.result && f.status === 'Pending') ? 'Completed' : (f.status || 'Pending'), res = f.result || ''; db.screens.push({ id: pad('S-', db.screens.length + 1), pid: f.pid, test: f.test, sample: f.sample, date: f.date, status: st, result: res }); if (res && res !== 'Inconclusive') { const p = P(f.pid); if (p) p.cat = res } scrPid = ''; save(); render() }
+    function upd(id, k, v) { const s = db.screens.find(x => x.id === id); if (!s) return; s[k] = v; if (k === 'result' && v && v !== 'Inconclusive') P(s.pid).cat = v; save(); render() }
+
+    function rep() {
+      const t = window._rt || 'All patients'; const T = ['All patients', ...CATS.slice(0, 5).map(c => c + ' patients'), 'Pending screening', 'Completed screening', 'Qaum-wise', 'District-wise'];
+      return `<h2>Reports & export</h2><div class="bar"><label>Report<select onchange="window._rt=this.value;render()">${opts(T, t)}</select></label>
+<button class="btn" onclick="csv()">Export Excel (CSV)</button><button class="btn ghost" onclick="window.print()">Print / Save PDF</button></div><div class="box">${(window._rep = repData(t), tbl(window._rep.c, window._rep.r))}</div>`
+    }
+    function repData(t) {
+      const c1 = ['ID', 'MR No', 'Name', 'Father', 'Age', 'District', 'Qaum', 'Family', 'Category'], pr = p => [p.id, esc(p.mrNo || '—'), p.name, p.father, p.age, p.district, p.qaum, p.famId, p.cat];
+      if (t === 'Qaum-wise' || t === 'District-wise') {
+        const k = t === 'Qaum-wise' ? 'qaum' : 'district', g = {}; db.patients.forEach(p => { const n = p[k] || 'Not recorded'; (g[n] = g[n] || []).push(p) });
+        return { c: [k === 'qaum' ? 'Qaum' : 'District', 'Families', 'Patients', 'Major', 'Carrier', 'Normal', 'Not screened'], r: Object.entries(g).map(([n, ps]) => [n, new Set(ps.map(p => p.famId)).size, ps.length, ps.filter(p => p.cat === 'Major').length, ps.filter(p => p.cat === 'Carrier').length, ps.filter(p => p.cat === 'Normal').length, ps.filter(p => p.cat === 'Unknown').length]) }
+      }
+      if (t === 'Pending screening' || t === 'Completed screening') { const w = t[0] === 'P' ? open : s => s.status === 'Completed'; return { c: ['Screening', 'Member', 'Family', 'Test', 'Sample', 'Date', 'Status', 'Result'], r: db.screens.filter(w).map(s => [s.id, P(s.pid).name, P(s.pid).famId, s.test, s.sample, s.date, s.status, s.result || '']) } }
+      const c = t.replace(' patients', ''); return { c: c1, r: db.patients.filter(p => t === 'All patients' || p.cat === c).map(pr) }
+    }
+    function csv() {
+      const r = window._rep, q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"', s = '\ufeff' + [r.c, ...r.r].map(x => x.map(q).join(',')).join('\r\n');
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([s], { type: 'text/csv' })); a.download = 'thalassemia-report.csv'; document.body.appendChild(a); a.click(); a.remove()
+    }
+    function printSlip(id, autoPrint = false) {
+      const p = P(id); if (!p || !p.id) return;
+      const famObj = db.families.find(f => f.id === p.famId);
+      const headP = famObj ? P(famObj.head) : {};
+      const screens = db.screens.filter(s => s.pid === p.id);
+      const latestScr = screens[screens.length - 1];
+      const dateStr = p.date || famObj?.date || new Date().toISOString().slice(0, 10);
+
+      document.getElementById('slipContent').innerHTML = `
+    <div class="slip-box">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--tl);padding-bottom:12px;margin-bottom:14px">
+        <div>
+          <h2 style="margin:0;font-size:1.35rem;color:var(--tl)">KITCC THALASSEMIA CENTER</h2>
+          <div style="font-size:0.85rem;color:var(--mu);margin-top:2px">Patient Registration &amp; Screening Card</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:1.3rem;font-weight:700;font-family:monospace;color:var(--tl)">${esc(p.id)}</div>
+          ${p.mrNo ? `<div style="font-size:0.9rem;font-weight:700;color:var(--tl)">MR: ${esc(p.mrNo)}</div>` : ''}
+          <div style="font-size:0.82rem;color:var(--mu)">Reg. Date: ${esc(dateStr)}</div>
+        </div>
+      </div>
+
+      <div class="slip-grid">
+        <div class="slip-row"><b>MR No:</b><span style="font-weight:600">${esc(p.mrNo || '—')}</span></div>
+        <div class="slip-row"><b>Patient Name:</b><span>${esc(p.name)}</span></div>
+        <div class="slip-row"><b>Age / Gender:</b><span>${esc(p.age || '—')} yrs / ${esc(p.gender || '—')}</span></div>
+        <div class="slip-row"><b>Father's Name:</b><span>${esc(p.father || '—')}</span></div>
+        <div class="slip-row"><b>Mother's Name:</b><span>${esc(p.mother || '—')}</span></div>
+        <div class="slip-row"><b>Mobile / Contact:</b><span>${esc(p.contact || '—')}</span></div>
+        <div class="slip-row"><b>City / District:</b><span>${esc(p.district || '—')}</span></div>
+        <div class="slip-row"><b>Caste / Qaum:</b><span>${esc(p.qaum || '—')}</span></div>
+        <div class="slip-row"><b>Category:</b><span>${chip(p.cat)}</span></div>
+        <div class="slip-row"><b>Family ID:</b><span>${esc(p.famId)} (${headP?.name ? 'Head: ' + esc(headP.name) : 'Self'})</span></div>
+        <div class="slip-row"><b>Relation:</b><span>${esc(p.rel || 'Self')}</span></div>
+      </div>
+
+      <div style="margin-top:14px;border-top:1px dashed var(--ln);padding-top:10px">
+        <div style="font-weight:700;font-size:0.82rem;color:var(--mu);margin-bottom:4px">SCREENING / LAB STATUS:</div>
+        <div style="font-size:0.9rem">
+          ${latestScr ? `<b>Test:</b> ${esc(latestScr.test)} &nbsp;|&nbsp; <b>Sample No:</b> ${esc(latestScr.sample)} &nbsp;|&nbsp; <b>Status:</b> ${esc(latestScr.status)} ${latestScr.result ? '&nbsp;|&nbsp; <b>Result:</b> ' + esc(latestScr.result) : ''}` : '<span style="color:var(--mu)">No laboratory screening recorded yet.</span>'}
+        </div>
+      </div>
+
+      <div style="margin-top:22px;padding-top:16px;border-top:1px solid var(--ln);display:flex;justify-content:space-between;align-items:flex-end;font-size:0.8rem">
+        <div style="color:var(--mu);max-width:320px">
+          * Please bring this registration card on every visit and for family screening tests.
+        </div>
+        <div style="text-align:center;min-width:160px;border-top:1px solid #14262e;padding-top:5px;font-weight:600">
+          Authorized Signature / Stamp
+        </div>
+      </div>
+    </div>`;
+
+      document.getElementById('slipModal').classList.add('show');
+      if (autoPrint) {
+        setTimeout(() => triggerPrintSlip(), 150);
+      }
+    }
+
+    function triggerPrintSlip() {
+      document.body.classList.add('printing-slip');
+      window.print();
+    }
+    window.addEventListener('afterprint', () => { document.body.classList.remove('printing-slip') });
+    function closeSlip() {
+      document.getElementById('slipModal').classList.remove('show');
+      document.body.classList.remove('printing-slip');
+    }
+
+    function editPat(id) {
+      const p = P(id);
+      if (!p || !p.id) return;
+      document.getElementById('editModalTitle').textContent = `Edit Patient (${esc(p.id)} – ${esc(p.name)})`;
+      document.getElementById('editModalBody').innerHTML = `
+    <form onsubmit="saveEditPat(event,'${p.id}')" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;align-items:end">
+      <label>MR No.<input name="mrNo" value="${esc(p.mrNo || '')}" placeholder="e.g. MR-0001"></label>
+      <label>Patient name<input name="name" value="${esc(p.name)}" required></label>
+      <label>Father name<input name="father" value="${esc(p.father || '')}"></label>
+      <label>Mother name<input name="mother" value="${esc(p.mother || '')}"></label>
+      <label>Age<input name="age" type="number" min="0" max="120" value="${esc(p.age || '')}"></label>
+      <label>Gender<select name="gender">${opts(['Male', 'Female', 'Other'], p.gender)}</select></label>
+      <label>Mobile<input name="contact" inputmode="tel" value="${esc(p.contact || '')}"></label>
+      <label>City / district<input name="district" value="${esc(p.district || '')}"></label>
+      <label>Caste / Tribe (Qaum)<input name="qaum" value="${esc(p.qaum || '')}"></label>
+      <label>Patient category<select name="cat">${opts(CATS, p.cat)}</select></label>
+      <label>Family<select name="famId">${db.families.map(f => `<option value="${f.id}"${f.id === p.famId ? ' selected' : ''}>${f.id} – ${esc(P(f.head).name)}</option>`).join('')}</select></label>
+      <label>Relation to family head<select name="rel">${opts(RELS, p.rel)}</select></label>
+      <div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px;border-top:1px solid var(--ln);padding-top:14px">
+        <button type="button" class="btn ghost" style="color:var(--rd);border-color:var(--rd)" onclick="closeEditModal();delPat('${p.id}')">Delete patient</button>
+        <div style="display:flex;gap:10px">
+          <button type="button" class="btn ghost" onclick="closeEditModal()">Cancel</button>
+          <button type="submit" class="btn">Save changes</button>
+        </div>
+      </div>
+    </form>`;
+      document.getElementById('editModal').classList.add('show');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('show');
+    }
+
+    function saveEditPat(e, id) {
+      e.preventDefault();
+      const p = P(id);
+      if (!p) return;
+      const f = Object.fromEntries(new FormData(e.target));
+      p.mrNo = (f.mrNo || '').trim();
+      p.name = f.name.trim();
+      p.father = f.father;
+      p.mother = f.mother;
+      p.age = f.age;
+      p.gender = f.gender;
+      p.contact = f.contact;
+      p.district = f.district;
+      p.qaum = f.qaum;
+      p.cat = f.cat;
+      p.famId = f.famId;
+      p.rel = f.rel;
+      save();
+      closeEditModal();
+      render();
+    }
+
+    window.addEventListener('keydown', e => { if (e.key === 'Escape') { closeEditModal(); closeSlip() } });
+
+    render();
+  </script>
+</body>
+
+</html>
